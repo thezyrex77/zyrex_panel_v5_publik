@@ -1,0 +1,304 @@
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+<title>Zyrex Panel</title>  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;500&display=swap" rel="stylesheet">  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  <style>  
+:root{  
+  --core-purple:#8A2BE2;--plasma-pink:#FF00FF;--cyber-teal:#00FFF0;  
+  --matrix-green:#00FF9D;--warning-orange:#FF6B00;  
+  --void-black:#0A001A;--font-primary:'Orbitron', monospace;  
+  --font-secondary:'Exo 2', sans-serif;  
+}  
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}  
+body{  
+  font-family:var(--font-secondary);background:var(--void-black);  
+  color:#E6E6FA;min-height:100vh;overflow:hidden;  
+  display:flex;justify-content:center;align-items:center;  
+}  
+  
+/* ===== BACKGROUND ===== */  
+#quantum-field{  
+  position:fixed;inset:0;  
+  background:  
+    radial-gradient(circle at 20% 30%, rgba(138,43,226,.15), transparent 40%),  
+    radial-gradient(circle at 80% 70%, rgba(255,0,255,.1), transparent 40%),  
+    linear-gradient(135deg,#0A001A,#1A0B2E,#0A001A);  
+  z-index:-3;  
+}  
+#nexus-grid{  
+  position:fixed;inset:0;  
+  background-image:  
+    linear-gradient(rgba(157,0,255,.3) 1px, transparent 1px),  
+    linear-gradient(90deg, rgba(157,0,255,.3) 1px, transparent 1px);  
+  background-size:50px 50px;opacity:.3;z-index:-2;  
+}  
+canvas{position:fixed;inset:0;z-index:-1}  
+  
+/* ===== CORE UI ===== */  
+.nexus-container{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;width:100%}  
+.quantum-card{  
+  width:100%;max-width:320px;background:rgba(26,11,46,.85);  
+  backdrop-filter:blur(15px);border-radius:18px;padding:25px;  
+  border:1px solid rgba(138,43,226,.5);  
+  box-shadow:0 4px 25px rgba(138,43,226,.25);  
+  animation:fadeIn 1s ease;  
+}  
+.profile-nexus{text-align:center;margin-bottom:15px}  
+.nexus-avatar{  
+  width:100px;height:100px;border-radius:50%;margin:auto;padding:2px;  
+  background:linear-gradient(45deg,var(--core-purple),var(--plasma-pink));  
+}  
+.nexus-avatar img{  
+  width:100%;height:100%;border-radius:50%;  
+  border:2px solid rgba(0,255,200,.5);  
+  object-fit: cover;
+}  
+.nexus-title{  
+  font-family:var(--font-primary);font-size:1.4rem;  
+  background:linear-gradient(90deg,var(--core-purple),var(--plasma-pink),var(--cyber-teal));  
+  -webkit-background-clip:text;color:transparent;  
+  text-align:center;margin-bottom:5px;  
+}  
+.nexus-subtitle{text-align:center;font-size:12px;opacity:.75;margin-bottom:15px}  
+.quantum-btn{  
+  width:100%;padding:10px;border:none;border-radius:10px;  
+  background:linear-gradient(45deg,var(--core-purple),var(--plasma-pink));  
+  color:#fff;font-family:var(--font-primary);  
+  cursor:pointer;margin-top:10px;font-size:14px;transition:.3s;  
+}  
+.quantum-btn:hover{background:linear-gradient(45deg,#9d4eff,#ff33ff)}  
+.module-panel{display:none}  
+.module-grid{display:flex;flex-direction:column;gap:10px;margin-top:18px}  
+.module-item{  
+  display:flex;justify-content:space-between;align-items:center;  
+  background:rgba(255,255,255,.08);padding:10px;border-radius:10px;  
+}  
+.quantum-switch{position:relative;width:38px;height:18px}  
+.quantum-switch input{opacity:0}  
+.quantum-slider{position:absolute;inset:0;background:#444;border-radius:20px;transition:.4s}  
+.quantum-slider:before{  
+  content:"";position:absolute;height:12px;width:12px;left:3px;bottom:3px;  
+  background:white;border-radius:50%;transition:.4s;  
+}  
+input:checked + .quantum-slider{  
+  background:linear-gradient(90deg,var(--core-purple),var(--plasma-pink));  
+}  
+input:checked + .quantum-slider:before{transform:translateX(20px)}  
+.active-counter{  
+  display:flex;justify-content:space-between;margin-top:15px;  
+  padding:10px 15px;background:rgba(10,0,26,.4);border-radius:12px;font-size:14px;  
+}  
+.counter-value{font-family:var(--font-primary);color:var(--cyber-teal);font-weight:bold}  
+  
+/* ===== EXPIRED SCREEN (PRO) ===== */  
+#expiredPage{  
+  position:fixed;inset:0;  
+  background:#05000a;  
+  display:none;flex-direction:column;justify-content:center;align-items:center;  
+  z-index:10000;  
+}  
+.expired-overlay{  
+  position:absolute;inset:0;  
+  background: radial-gradient(circle, rgba(255,0,0,0.15) 0%, transparent 70%);  
+  animation: pulseBg 2s infinite alternate;  
+}  
+@keyframes pulseBg { from{opacity:0.3} to{opacity:0.8} }  
+  
+.expired-box{  
+  position:relative;width:85%;max-width:350px;  
+  background:rgba(15,0,25,0.9);  
+  border:2px solid #ff0055;  
+  border-radius:20px;padding:40px 20px;  
+  text-align:center;  
+  box-shadow: 0 0 50px rgba(255,0,85,0.4), inset 0 0 20px rgba(255,0,85,0.2);  
+  overflow:hidden;  
+}  
+.expired-box::before{  
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;  
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,85,0.05) 3px, transparent 3px);  
+  pointer-events:none;  
+}  
+.warning-icon{  
+  font-size:70px;color:#ff0055;  
+  text-shadow: 0 0 20px #ff0055;  
+  animation: glitch 0.3s infinite alternate;  
+}  
+@keyframes glitch {  
+  0% { transform: translate(0); }  
+  100% { transform: translate(2px, -2px); filter: hue-rotate(90deg); }  
+}  
+.expired-title{  
+  font-family:var(--font-primary);font-size:1.5rem;color:#fff;  
+  margin:20px 0 10px;text-transform:uppercase;letter-spacing:2px;  
+}  
+.expired-desc{  
+  font-size:14px;color:#ff88aa;line-height:1.6;margin-bottom:25px;  
+}  
+.price-tag{  
+  display:inline-block;padding:8px 20px;background:rgba(255,0,85,0.1);  
+  border:1px dashed #ff0055;border-radius:5px;  
+  color:#fff;font-family:var(--font-primary);font-size:18px;margin-bottom:20px;  
+}  
+.buy-btn{  
+  width:100%;padding:15px;border:none;border-radius:50px;  
+  background:linear-gradient(90deg, #ff0055, #8A2BE2);  
+  color:white;font-family:var(--font-primary);font-weight:bold;  
+  cursor:pointer;text-transform:uppercase;  
+  box-shadow: 0 0 20px rgba(255,0,85,0.5);  
+  transition: 0.3s;  
+}  
+.buy-btn:active{transform:scale(0.95)}  
+  
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}  
+</style>  </head>  <body>  <div id="quantum-field"></div>  
+<div id="nexus-grid"></div>  
+<canvas id="particles"></canvas>  <div class="nexus-container">  <div class="quantum-card" id="loginCard">  
+  <div class="profile-nexus">  
+    <div class="nexus-avatar">  
+      <img src="profile.jpg">  
+    </div>  
+  </div>    <h2 class="nexus-title">Zyrex Panel</h2>  
+  <div class="nexus-subtitle">Ikuti Saluran Sebelum Menggunakan Panel</div>  <button class="quantum-btn" id="waBtn"><i class="fab fa-whatsapp"></i> Join WhatsApp Channel</button>
+<button class="quantum-btn" id="tgBtn"><i class="fab fa-telegram"></i> Join Telegram Channel</button>
+
+  <button class="quantum-btn" id="unlockBtn" style="opacity:.4;cursor:not-allowed;">  
+    <i class="fas fa-lock"></i> Login  
+  </button>  
+</div>  <div class="quantum-card module-panel" id="panelCard">  
+  <div class="profile-nexus">  
+    <div class="nexus-avatar">  
+      <img src="profile.jpg">  
+    </div>  
+  </div>    <h2 class="nexus-title">Zyrex Panel</h2>    <div class="module-grid">  
+    <div class="module-item"><span>Aimbot Head 💀</span>  
+      <label class="quantum-switch"><input type="checkbox" class="module-toggle"><span class="quantum-slider"></span></label>  
+    </div>  
+    <div class="module-item"><span>Aim Body (Badan Hs) ☠️</span>  
+      <label class="quantum-switch"><input type="checkbox" class="module-toggle"><span class="quantum-slider"></span></label>  
+    </div>  
+    <div class="module-item"><span>Hologram All Character 👾</span>  
+      <label class="quantum-switch"><input type="checkbox" class="module-toggle"><span class="quantum-slider"></span></label>  
+    </div>  
+    <div class="module-item"><span>Esp Line & Box 👺</span>  
+      <label class="quantum-switch"><input type="checkbox" class="module-toggle"><span class="quantum-slider"></span></label>  
+    </div>  
+        <div class="module-item"><span>Auto Aim AWM 👽</span>  
+      <label class="quantum-switch"><input type="checkbox" class="module-toggle"><span class="quantum-slider"></span></label>  
+  </div>    <div class="active-counter">  
+    <span>Active Modules:</span>  
+    <span class="counter-value" id="activeCount">0</span>  
+  </div>  
+</div>  </div>  <div id="expiredPage">  
+  <div class="expired-overlay"></div>
+  <div class="expired-box">
+    <div class="warning-icon"><i class="fas fa-shield-virus"></i></div>
+    <h2 class="expired-title">Access Ditolak</h2>
+    <p class="expired-desc">Masa berlaku panel gratis kamu telah berakhir. Silakan upgrade ke versi permanen untuk akses tanpa batas.</p>
+    <div class="price-tag">IDR 100,000</div>
+    <button class="buy-btn" onclick="goToBuy()">Beli Panel Sekarang</button>
+    <p style="margin-top:15px; font-size:10px; color:#555; letter-spacing:1px;">ZYREX-SECURITY-SYSTEM-V3</p>
+  </div>
+</div>  <script>  
+// ===== PARTICLES =====  
+const canvas=document.getElementById('particles');  
+const ctx=canvas.getContext('2d');  
+let particles=[];  
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}  
+function initParticles(){  
+  particles=[];  
+  for(let i=0;i<80;i++){  
+    particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,  
+    vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:Math.random()*2+1});  
+  }  
+}  
+function animate(){  
+  ctx.clearRect(0,0,canvas.width,canvas.height);  
+  particles.forEach(p=>{  
+    p.x+=p.vx;p.y+=p.vy;  
+    if(p.x<0||p.x>canvas.width)p.vx*=-1;  
+    if(p.y<0||p.y>canvas.height)p.vy*=-1;  
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);  
+    ctx.fillStyle="rgba(138,43,226,.8)";ctx.fill();  
+  });  
+  requestAnimationFrame(animate);  
+}  
+resize();initParticles();animate();  
+addEventListener('resize',resize);  
+  
+// ===== LINKS =====  
+const whatsappLink="https://whatsapp.com/channel/0029VaPhjdlAjPXT6MFkR60s";  
+const telegramLink="https://t.me/TheZyrex777";  
+const buyLink="https://t.me/m/SOCYuJn3YzI1"; // LINK TERBARU DISINI
+
+// ===== FIX APK BLANK (SMART OPEN) =====
+function smartOpen(url) {
+    const intentURL = "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+    const a = document.createElement('a');
+    a.href = intentURL;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    setTimeout(() => {
+        window.open(url, '_system');
+    }, 500);
+}
+  
+// ===== SUB2UNLOCK =====  
+let waDone=false,tgDone=false;  
+const waBtn=document.getElementById("waBtn");  
+const tgBtn=document.getElementById("tgBtn");  
+const unlockBtn=document.getElementById("unlockBtn");  
+  
+function checkUnlock(){  
+  if(waDone && tgDone){  
+    unlockBtn.style.opacity="1";  
+    unlockBtn.style.cursor="pointer";  
+    unlockBtn.innerHTML='<i class="fas fa-unlock"></i> Login';  
+  }  
+}  
+  
+waBtn.onclick=()=>{  
+  if(waDone) return;  
+  waDone=true;  
+  waBtn.innerHTML='<i class="fas fa-check"></i> WhatsApp Joined';  
+  waBtn.style.background="linear-gradient(45deg,#00FF9D,#00cfa0)";  
+  checkUnlock();  
+  smartOpen(whatsappLink);
+};  
+  
+tgBtn.onclick=()=>{  
+  if(tgDone) return;  
+  tgDone=true;  
+  tgBtn.innerHTML='<i class="fas fa-check"></i> Telegram Joined';  
+  tgBtn.style.background="linear-gradient(45deg,#00FFF0,#00bcd4)";  
+  checkUnlock();  
+  smartOpen(telegramLink);
+};  
+  
+unlockBtn.onclick=()=>{  
+  if(waDone && tgDone){  
+    document.getElementById('loginCard').style.display='none';  
+    document.getElementById('panelCard').style.display='block';  
+  }  
+};  
+  
+// ===== EXPIRED LOGIC =====  
+document.querySelectorAll('.module-toggle').forEach(t=>{  
+  t.addEventListener('change',()=>{  
+    if(t.checked){  
+      setTimeout(()=>{  
+        document.getElementById('expiredPage').style.display='flex';  
+      },500);  
+    }  
+  });  
+});  
+  
+// ===== BUY FUNCTION =====  
+function goToBuy(){  
+  smartOpen(buyLink);  
+}  
+</script>  </body>  
+</html>
